@@ -2,15 +2,20 @@
 """
 Template to run the processing pipeline
 """
+import time
+import pandas as pd
 
+start = time.time()
+
+print("Start analysis")
 #load the parameters:
-execfile('/home/yourname/experiment/parameter_file_sampleID.py')
 
+execfile('.../parameter_file_template.py') #user specific
 
 #resampling operations:
 #######################
 #resampling for the correction of stage movements during the acquisition between channels:
-resampleData(**CorrectionResamplingParameterCfos);
+resampleData(**CorrectionResamplingParameterSignal);
 resampleData(**CorrectionResamplingParameterAutoFluo);
 
 #Downsampling for alignment to the Atlas:
@@ -30,6 +35,10 @@ resultDirectory  = alignData(**RegistrationAlignmentParameter);
 ################
 detectCells(**ImageProcessingParameter);
 
+#Transform brain to atlas:
+transformData(**TransformParameter);
+
+
 #Filtering of the detected peaks:
 #################################
 #Loading the results:
@@ -40,7 +49,7 @@ points, intensities = io.readPoints(ImageProcessingParameter["sink"]);
 #row = (1,1) : peak intensity from the DoG filtered data
 #row = (2,2) : peak intensity from the background subtracted data
 #row = (3,3) : voxel size from the watershed
-points, intensities = thresholdPoints(points, intensities, threshold = (20, 900), row = (3,3));
+points, intensities = thresholdPoints(points, intensities, threshold = (50,5000), row = (1,1));
 io.writePoints(FilteredCellsFile, (points, intensities));
 
 
@@ -48,7 +57,7 @@ io.writePoints(FilteredCellsFile, (points, intensities));
 #######################
 #import ClearMap.Visualization.Plot as plt;
 #pointSource= os.path.join(BaseDirectory, FilteredCellsFile[0]);
-#data = plt.overlayPoints(cFosFile, pointSource, pointColor = None, **cFosFileRange);
+#data = plt.overlayPoints(SignalFile, pointSource, pointColor = None, **SignalFileRange);
 #io.writeData(os.path.join(BaseDirectory, 'cells_check.tif'), data);
 
 
@@ -75,13 +84,13 @@ intensities = io.readPoints(FilteredCellsFile[1])
 #Without weigths:
 vox = voxelize(points, AtlasFile, **voxelizeParameter);
 if not isinstance(vox, basestring):
-  io.writeData(os.path.join(BaseDirectory, 'cells_heatmap.tif'), vox.astype('int32'));
+   io.writeData(os.path.join(BaseDirectory, 'cells_heatmap.tif'), vox.astype('int32'));
 
 #With weigths from the intensity file (here raw intensity):
 voxelizeParameter["weights"] = intensities[:,0].astype(float);
 vox = voxelize(points, AtlasFile, **voxelizeParameter);
 if not isinstance(vox, basestring):
-  io.writeData(os.path.join(BaseDirectory, 'cells_heatmap_weighted.tif'), vox.astype('int32'));
+   io.writeData(os.path.join(BaseDirectory, 'cells_heatmap_weighted.tif'), vox.astype('int32'));
 
 
 
@@ -90,26 +99,31 @@ if not isinstance(vox, basestring):
 #Table generation:
 ##################
 #With integrated weigths from the intensity file (here raw intensity):
-ids, counts = countPointsInRegions(points, labeledImage = AnnotationFile, intensities = intensities, intensityRow = 0);
-table = numpy.zeros(ids.shape, dtype=[('id','int64'),('counts','f8'),('name', 'a256')])
-table["id"] = ids;
-table["counts"] = counts;
-table["name"] = labelToName(ids);
-io.writeTable(os.path.join(BaseDirectory, 'Annotated_counts_intensities.csv'), table);
+#ids, counts = countPointsInRegions(points, labeledImage = AnnotationFile, intensities = intensities, intensityRow = 0);
+#table = numpy.zeros(ids.shape, dtype=[('id','int64'),('counts','f8'),('name', 'a256')])
+#table["id"] = ids;
+#table["counts"] = counts;
+#table["name"] = labelToName(ids);
+#io.writeTable(os.path.join(BaseDirectory, 'Annotated_counts_intensities.csv'), table);
 
 #Without weigths (pure cell number):
-ids, counts = countPointsInRegions(points, labeledImage = AnnotationFile, intensities = None);
+ids, counts = countPointsInRegions(points, labeledImage = AnnotationFile, intensities = None, collapse = None);
 table = numpy.zeros(ids.shape, dtype=[('id','int64'),('counts','f8'),('name', 'a256')])
 table["id"] = ids;
 table["counts"] = counts;
 table["name"] = labelToName(ids);
 io.writeTable(os.path.join(BaseDirectory, 'Annotated_counts.csv'), table);
 
+#####################
+
+#clean_table(os.path.join(BaseDirectory, 'Annotated_counts_intensities.csv'),AtlasInfoFile)
+clean_table(os.path.join(BaseDirectory, 'Annotated_counts.csv'),AtlasInfoFile)
 
 
+
 #####################
-#####################
-#####################
-#####################
-#####################
-#####################
+
+# Fin
+end = time.time()
+print("The entire process ended in ",end - start)
+
