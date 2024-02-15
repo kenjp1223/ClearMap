@@ -21,6 +21,10 @@ resampleData(**CorrectionResamplingParameterAutoFluo);
 #Downsampling for alignment to the Atlas:
 resampleData(**RegistrationResamplingParameter);
 
+#resampling for high res
+resampleData(**RegistrationResamplingHRParameter);
+resampleData(**RegistrationResamplingHRAutoParameter);
+
 
 #Alignment operations:
 ######################
@@ -29,7 +33,12 @@ resultDirectory  = alignData(**CorrectionAlignmentParameter);
 
 #alignment to the Atlas:
 resultDirectory  = alignData(**RegistrationAlignmentParameter);
+transformData(**TransformParameter);
+transformData(**ContourTransformParameter);
 
+#alignment to the Highres Atlas:
+resultDirectory  = alignData(**Highres_RegistrationAlignmentParameter);
+transformData(**HRTransformParameter);
 
 #Cell detection:
 ################

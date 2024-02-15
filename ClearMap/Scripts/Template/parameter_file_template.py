@@ -18,6 +18,7 @@ import ClearMap.IO as io
 from ClearMap.Alignment.Resampling import resampleData;
 from ClearMap.Alignment.Elastix import alignData, transformPoints
 from ClearMap.ImageProcessing.CellDetection import detectCells
+from ClearMap.Alignment.F1_Score import LoadingData, F1Scores_WithContours
 from ClearMap.Alignment.Resampling import resamplePoints, resamplePointsInverse
 from ClearMap.Analysis.Voxelization import voxelize
 from ClearMap.Utils.ParameterTools import joinParameter
@@ -76,6 +77,8 @@ PathReg        = '.../clearmap_ressources_mouse_brain/ClearMap_ressources/Region
 AtlasFile      = os.path.join(PathReg, 'Kim_ref_adult_v1_brain.tif');
 AnnotationFile = os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.0.tif');
 AtlasInfoFile = os.path.join(PathReg, 'atlas_info_KimRef_FPbasedLabel_v2.9.csv');
+HRAtlasFile      = os.path.join(PathReg, 'Atlas_HRresampled.tif');
+ContourFile	= os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9_contour_map.tif');
 
 ##### 
 
@@ -247,8 +250,53 @@ CorrectionResamplingParameterSignal["resolutionSink"]   = ResolutionAffineSignal
 
 CorrectionResamplingParameterSignal["orientation"] = FinalOrientation;
    
+### Resample Signal images to high-res
+# Autofluorescent Signal resampling for aquisition correction
+
+ResolutionAffineHRSignalAutoFluo =  (4, 4, 16);
+
+CorrectionResamplingParameterHRSignal = ResamplingParameter.copy();
+
+CorrectionResamplingParameterHRSignal["source"] = SignalFile;
+CorrectionResamplingParameterHRSignal["sink"]   = os.path.join(BaseDirectory, ''+signal_channel_key+'_HRresampled.tif');
+    
+CorrectionResamplingParameterHRSignal["resolutionSource"] = OriginalResolution;
+CorrectionResamplingParameterHRSignal["resolutionSink"]   = ResolutionAffineHRSignalAutoFluo ;
+
+CorrectionResamplingParameterHRSignal["orientation"] = FinalOrientation;
    
-   
+### Resample Auto images to high-res
+# Autofluorescent Auto resampling for aquisition correction
+
+ResolutionAffineHRAutoAutoFluo =  (4, 4, 16);
+
+CorrectionResamplingParameterHRAuto = ResamplingParameter.copy();
+
+CorrectionResamplingParameterHRAuto["source"] = AutofluoFile ;
+CorrectionResamplingParameterHRAuto["sink"]   = os.path.join(BaseDirectory, 'autofluo_HRresampled.tif');
+    
+CorrectionResamplingParameterHRAuto["resolutionSource"] = OriginalResolution;
+CorrectionResamplingParameterHRAuto["resolutionSink"]   = ResolutionAffineHRAutoAutoFluo ;
+
+CorrectionResamplingParameterHRAuto["orientation"] = FinalOrientation;
+
+
+### Resample Atlas images to high-res
+# Autofluorescent Signal resampling for aquisition correction
+
+ResolutionAffineHRSignalAtlas =  (4, 4, 50);
+
+CorrectionResamplingParameterHRAtlas = ResamplingParameter.copy();
+
+CorrectionResamplingParameterHRAtlas["source"] = AtlasFile;
+CorrectionResamplingParameterHRAtlas["sink"]   = os.path.join(PathReg, 'Atlas_HRresampled.tif');
+    
+CorrectionResamplingParameterHRAtlas["resolutionSource"] = AtlasResolution ;
+CorrectionResamplingParameterHRAtlas["resolutionSink"]   = ResolutionAffineHRSignalAtlas ;
+
+CorrectionResamplingParameterHRAtlas["orientation"] = (1,2,3);
+    
+
 #Files for Auto-fluorescence for acquisition movements correction
 CorrectionResamplingParameterAutoFluo = CorrectionResamplingParameterSignal.copy();
 CorrectionResamplingParameterAutoFluo["source"] = AutofluoFile;
@@ -259,6 +307,13 @@ RegistrationResamplingParameter = CorrectionResamplingParameterAutoFluo.copy();
 RegistrationResamplingParameter["sink"]            =  os.path.join(BaseDirectory, 'autofluo_resampled.tif');
 RegistrationResamplingParameter["resolutionSink"]  = AtlasResolution;
    
+#Files for highres signal (Atlas Registration)
+RegistrationResamplingHRParameter = CorrectionResamplingParameterHRSignal.copy();
+RegistrationResamplingHRParameter["resolutionSink"]  = (4,4,50);
+
+#Files for highres auto (Atlas Registration)
+RegistrationResamplingHRAutoParameter = CorrectionResamplingParameterHRAuto.copy();
+RegistrationResamplingHRAutoParameter["resolutionSink"]  = (4,4,50);
 
 ### Align Signal and Autofluo
 
@@ -291,12 +346,43 @@ RegistrationAlignmentParameter["fixedImage"]   = os.path.join(BaseDirectory, 'au
 RegistrationAlignmentParameter["affineParameterFile"]  = os.path.join(PathReg, 'Par0000affine.txt');
 RegistrationAlignmentParameter["bSplineParameterFile"] = os.path.join(PathReg, 'Par0000bspline.txt');
 
+### Align Signal to Highres Atlas
+Highres_RegistrationAlignmentParameter = {            
+    #moving and reference images
+    "movingImage" : os.path.join(BaseDirectory, 'autofluo_HRresampled.tif'),
+    "fixedImage"  : HRAtlasFile,
+    
+    #elastix parameter files for alignment
+    "affineParameterFile"  : os.path.join(PathReg, 'Par0000affine.txt'),
+    "bSplineParameterFile" :  os.path.join(PathReg, 'Par0000bspline.txt'),
+    
+    #directory of the alignment result
+    "resultDirectory" :  os.path.join(BaseDirectory, 'elastix_'+signal_channel_key+'_to_HRauto')
+    }; 
+
 ## Transform the atlas to autofluo
 TransformParameter = {};
 TransformParameter['sink'] = os.path.join(BaseDirectory, 'aligned_atlas.tif')
 TransformParameter['transformDirectory']  = RegistrationAlignmentParameter["resultDirectory"]
 TransformParameter['resultDirectory'] = os.path.join(BaseDirectory, 'transform_atlas')
 TransformParameter['source'] = AtlasFile
+
+## Transform the contour to autofluo
+ContourTransformParameter = {};
+ContourTransformParameter['sink'] = os.path.join(BaseDirectory, 'aligned_contour.tif')
+ContourTransformParameter['transformDirectory']  = RegistrationAlignmentParameter["resultDirectory"]
+ContourTransformParameter['resultDirectory'] = os.path.join(BaseDirectory, 'transform_contour')
+ContourTransformParameter['source'] = ContourFile
+
+
+## Transform the signal to HRatlas
+HRTransformParameter = {};
+HRTransformParameter['sink'] = os.path.join(BaseDirectory, 'aligned_HRsignal.tif')
+HRTransformParameter['transformDirectory']  = Highres_RegistrationAlignmentParameter["resultDirectory"]
+HRTransformParameter['resultDirectory'] = os.path.join(BaseDirectory, 'transform_HRsignal')
+HRTransformParameter['source'] = os.path.join(BaseDirectory, ''+signal_channel_key+'_HRresampled.tif')
+
+
 
 # result files for object coordinates (csv, vtk or ims)
 SpotDetectionParameter = {
@@ -334,3 +420,9 @@ RegistrationResamplingPointParameter = RegistrationResamplingParameter.copy();
 RegistrationResamplingPointParameter["dataSizeSource"] = SignalFile;
 RegistrationResamplingPointParameter["pointSink"]  = None;
 
+### Create Contour and overlay with brain
+ContourOverlayParameter = {
+	"binary_f1_output"		: os.path.join(BaseDirectory, signal_channel_key + '_binary_f1_score.npy'),
+	"mri_atlas_image_path"	: os.path.join(BaseDirectory, 'autofluo_resampled.tif');,
+	"clearmap_output_image_path":os.path.join(BaseDirectory, 'aligned_atlas.tif') ,
+}
