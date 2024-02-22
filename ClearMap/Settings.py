@@ -26,7 +26,7 @@ Notes:
 """
 
 #path to elastix installation
-ElastixPath = '/elastix_linux64_v4.8';
+ElastixPath = '/elastix-4.9.0-linux';
 """str: Absolue path to the elastix installation
 
 Notes:
