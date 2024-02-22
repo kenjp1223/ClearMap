@@ -16,7 +16,7 @@ import os
 import socket
 
 #path to Ilastik installation
-IlastikPath = '.../ClearMap/ClearMap/external/ilastik-1.4.0rc6-Linux';
+IlastikPath = '/ilastik-1.3.3post3-Linux';
 """str: Absolute path to the Ilastik 0.5 installation
 
 Notes:
@@ -26,7 +26,7 @@ Notes:
 """
 
 #path to elastix installation
-ElastixPath = '.../ClearMap/ClearMap/external/elastix_linux64_v4.8';
+ElastixPath = '/elastix_linux64_v4.8';
 """str: Absolue path to the elastix installation
 
 Notes:
