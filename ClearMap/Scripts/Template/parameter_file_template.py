@@ -26,7 +26,7 @@ from ClearMap.IO.clean_table import clean_table
 
 # The following are specific to brain atlas. 
 # If you are using allen brain atlas, use other files
-from ClearMap.Analysis.Label_YK_24FEB22 import countPointsInRegions, labelToName
+from ClearMap.Analysis.Label_YK_24FEB22 import countPointsInRegions, labelToName, initialize
 from ClearMap.Analysis.Statistics_YK_24FEB22 import thresholdPoints
 # For Allen brains
 #from ClearMap.Analysis.Label_Rat_test import countPointsInRegions, labelToName
@@ -79,7 +79,7 @@ AnnotationFile = os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.0.tif');
 AtlasInfoFile = os.path.join(PathReg, 'atlas_info_KimRef_FPbasedLabel_v2.9.csv');
 HRAtlasFile      = os.path.join(PathReg, 'Atlas_HRresampled.tif');
 ContourFile	= os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9_contour_map.tif');
-
+initialize(annotationFile = AtlasInfoFile); 
 ##### 
 
 
