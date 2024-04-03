@@ -45,6 +45,7 @@ BaseDirectory = r'.../DataPath';
 metapath = os.path.join(BaseDirectory,'metadata.txt');
 
 # Define what channels will be used for signal and background
+# The sturcture here is optimized for LifeCanvas SmartSpim2 images
 bg_channel_key = 'Ex_488_Ch0_stitched' 
 signal_channel_key = 'Ex_561_Ch1_stitched'
 signal_ex = signal_channel_key.split('_')[1] # automatically gets the Exitation laser wave length.
@@ -64,8 +65,8 @@ FinalOrientation = (1, 3, -2);
 # If you are using SpotDetection, go directly to the Cell Detection Parameters section
 ImageProcessingMethod = "Ilastik"; 
 classifier_path = r".../Classifier.ilp"
-
 classindex = 0 # Index of the class to be used for spot detection. Depends on how you set labels in Ilastik.
+
 ##### 
 
 ##### PARAMETERS SPECIFIC FOR ATLAS
@@ -74,26 +75,24 @@ AtlasResolution = (20, 20, 50);
 
 #Path to registration parameters and atlases
 PathReg        = '.../clearmap_ressources_mouse_brain/ClearMap_ressources/Regions_annotations/'; # change this to the path where you store the brain data
-AtlasFile      = os.path.join(PathReg, 'Kim_ref_adult_v1_brain.tif');
-AnnotationFile = os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.0.tif');
-AtlasInfoFile = os.path.join(PathReg, 'atlas_info_KimRef_FPbasedLabel_v2.9.csv');
-HRAtlasFile      = os.path.join(PathReg, 'Atlas_HRresampled.tif');
-ContourFile	= os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9_contour_map.tif');
-initialize(annotationFile = AtlasInfoFile); 
+AtlasFile      = os.path.join(PathReg, 'Kim_ref_adult_v1_brain.tif'); # The image file which contains the MRI scan of mouse brain. This will be used to align the atlas to the raw images.
+AnnotationFile = os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9.tif'); # The image file which contains the mouse brain with region labels.
+AtlasInfoFile = os.path.join(PathReg, 'atlas_info_KimRef_FPbasedLabel_v2.9.csv'); # The table file which contains information about the brain atlas structure. The region "id" listed in this file will be used to decode the regions in "AnnotationFile".
+HRAtlasFile      = os.path.join(PathReg, 'Atlas_HRresampled.tif'); # The high resolution version of the brain atlas. Used for visualization.
+ContourFile	= os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9_contour_map.tif'); 
+initialize(annotationFile = AtlasInfoFile); # inialize the annotation file
+
 ##### 
 
 
 
 # Load the meta data file from the SmartSpim2
 metadf = pd.read_csv(metapath, sep='\t', header=0,nrows = 1,encoding= 'unicode_escape')
-#print(metadf.columns)
-xy_res,z_res = metadf.loc[:,metadf.columns[2:4]].values[0] # This will automatically get the resolution of the data.
+xy_res,z_res = metadf.loc[:,metadf.columns[4:6]].values[0] # This will automatically get the resolution of the data.
 #print(metadf.loc[:,metadf.columns[2:4]].values[0] )
+
 #Data File and Reference channel File, usually as a sequence of files from the microscope
 #This is adjusted to work with SmartSpim2 data files. Adjust if there is a change in how the data is stored.
-
-#SignalFile = os.path.join(BaseDirectory, signal_channel_key, 'cFOS_647_R2_HR_F.ome.tif'); # check if this matches the file name
-#AutofluoFile = os.path.join(BaseDirectory, bg_channel_key, 'auto_488_R2_HR_F.ome.tif');
 SignalFile = os.path.join(BaseDirectory,signal_channel_key, imaging_id + '_\d{6}_' + signal_ex + '.tif');
 AutofluoFile = os.path.join(BaseDirectory,bg_channel_key,  imaging_id + '_\d{6}_' + bg_ex + '.tif');
 
@@ -107,13 +106,12 @@ OriginalResolution = (xy_res, xy_res, z_res);
 
 
 
-
 ######################### Cell Detection Parameters using custom filters
 
 #Spot detection method: faster, but optimised for spherical objects.
 #You can also use "Ilastik" for more complex objects
 ImageProcessingParameter = {
-    'method': "Ilastik", # Use "SpotDetection" or "Ilastik"
+    'method': ImageProcessingMethod, # Use "SpotDetection" or "Ilastik"
     'classifier': classifier_path,
     'classindex': classindex, # Index of the class to be used for spot detection. Depends on how you set labels in Ilastik.
 }
@@ -204,19 +202,19 @@ voxelizeParameter = {
 
 #Processes to use for Resampling (usually twice the number of physical processors)
 ResamplingParameter = {
-    "processes": 48
+    "processes": 16
 };
 
 
 #Stack Processing Parameter for cell detection
 StackProcessingParameter = {
     #max number of parallel processes. Be careful of the memory footprint of each process!
-    "processes" : 20,
+    "processes" : 8,
    
     #chunk sizes: number of planes processed at once
-    "chunkSizeMax" : 500,
-    "chunkSizeMin" : 400,
-    "chunkOverlap" : 40,
+    "chunkSizeMax" : 250,
+    "chunkSizeMin" : 200,
+    "chunkOverlap" : 20,
 
     #optimize chunk size and number to number of processes to limit the number of cycles
     "chunkOptimization" : False,
@@ -224,7 +222,7 @@ StackProcessingParameter = {
     #increase chunk size for optimization (True, False or all = automatic)
     "chunkOptimizationSize" : False,
    
-    "processMethod" : "parallel"
+    "processMethod" : "sequential"
    };
 
 

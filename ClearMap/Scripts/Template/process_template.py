@@ -8,8 +8,8 @@ import pandas as pd
 start = time.time()
 
 print("Start analysis")
-#load the parameters:
 
+#load the parameters:
 execfile('.../parameter_file_template.py') #user specific
 
 #resampling operations:
@@ -21,9 +21,9 @@ resampleData(**CorrectionResamplingParameterAutoFluo);
 #Downsampling for alignment to the Atlas:
 resampleData(**RegistrationResamplingParameter);
 
-#resampling for high res
-resampleData(**RegistrationResamplingHRParameter);
-resampleData(**RegistrationResamplingHRAutoParameter);
+#resampling for high res. Uncomment only when you need to create high resolution resampled images.
+#resampleData(**RegistrationResamplingHRParameter);
+#resampleData(**RegistrationResamplingHRAutoParameter);
 
 
 #Alignment operations:

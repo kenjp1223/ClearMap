@@ -8,7 +8,6 @@
 #SBATCH --mail-type=begin        # send email when job begins
 #SBATCH --mail-type=end          # send email when job ends
 #SBATCH --mail-user=XXX@YYY
-#SBATCH --partition=EM               # Specify partition/queue
 #SBATCH -o clearmap_template.out
 
 module purge
