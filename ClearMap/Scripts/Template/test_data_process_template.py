@@ -22,16 +22,16 @@ generate_random_crops.main(**CropGeneratingParameter)
 rootpath = os.path.join(CropGeneratingParameter['output_folder'],'train')
 for fname in [f for f in os.listdir(rootpath) if '.tif' in f]:
    # update parameters for each crop
-   CropGeneratingParameter['source'] = os.path.join(rootpath, fname)
-   CropGeneratingParameter['sink'] = ( os.path.join(rootpath, fname.replace('.tif','_Spot_cells-allpoints.npy')),\
+   CropImageProcessingParameter['source'] = os.path.join(rootpath, fname)
+   CropImageProcessingParameter['sink'] = ( os.path.join(rootpath, fname.replace('.tif','_Spot_cells-allpoints.npy')),\
                                        os.path.join(rootpath, fname.replace('.tif','_Spot_intensities-allpoints.npy')))
    # cell detection                                       
-   detectCells(**CropGeneratingParameter);
+   detectCells(**CropImageProcessingParameter);
 
    #Filtering of the detected peaks:
    #################################
    #Loading the results:
-   points, intensities = io.readPoints(CropGeneratingParameter["sink"]);
+   points, intensities = io.readPoints(CropImageProcessingParameter["sink"]);
 
    #Thresholding: the threshold parameter is either intensity or size in voxel, depending on the chosen "row"
    #row = (0,0) : peak intensity from the raw data
@@ -49,7 +49,7 @@ for fname in [f for f in os.listdir(rootpath) if '.tif' in f]:
    #######################
    import ClearMap.Visualization.Plot as plt;
    pointSource= FilteredCellsFile[0];
-   data = plt.overlayPoints(CropGeneratingParameter['source'], pointSource, pointColor = None, **SignalFileRange);
+   data = plt.overlayPoints(CropImageProcessingParameter['source'], pointSource, pointColor = None, **SignalFileRange);
    io.writeData(os.path.join(rootpath, fname.replace('.tif','_Spot_cells_check.tif')), data);
 
 #####################
