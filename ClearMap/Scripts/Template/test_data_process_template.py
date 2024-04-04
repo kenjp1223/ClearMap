@@ -19,7 +19,7 @@ generate_random_crops.main(**CropGeneratingParameter)
 
 #run cell detection on the generated dataset
 #run a for loop though all crops
-rootpath = CropGeneratingParameter['output_folder']['train']
+rootpath = os.path.join(CropGeneratingParameter['output_folder'],'train')
 for fname in [f for f in os.listdir(rootpath) if '.tif' in f]:
    # update parameters for each crop
    CropGeneratingParameter['source'] = os.path.join(rootpath, fname)
