@@ -23,6 +23,7 @@ from ClearMap.Alignment.Resampling import resamplePoints, resamplePointsInverse
 from ClearMap.Analysis.Voxelization import voxelize
 from ClearMap.Utils.ParameterTools import joinParameter
 from ClearMap.IO.clean_table import clean_table
+from ClearMap.IO import generate_random_crops
 
 # The following are specific to brain atlas. 
 # If you are using allen brain atlas, use other files
@@ -103,7 +104,17 @@ SignalFileRange = {'x' : all, 'y' : (all), 'z' : all};
 #Resolution of the Raw Data (in um / pixel)
 OriginalResolution = (xy_res, xy_res, z_res);
 
-
+######################### Crop generation Parameters
+CropGeneratingParameter = {
+    'input_folder'      : os.path.join(BaseDirectory, signal_channel_key), # the input folder which contains the data you want to generate crops. Default to signal folder.
+    'output_folder'     : os.path.join(BaseDirectory, signal_channel_key +'_crops'), # the output folder to store the crop data.
+    'fkey'              : os.path.basename(BaseDirectory), # identifier for the cropped image. Default will use the folder name.
+    'n_crops'           : 10,  # number of cropss that will be generated
+    'test_proportion'   : 0.2, # proportion of test data. 
+    'zoffsets'          : 100, # offset in z-axis. images in [0:zoffsets] will not be used.
+    'crop_size'         : (100,250,250), # size of the crop
+    'crop_per_stack'    : 3 # program will loop through random z positions. number of crops defined here will be generated for each z position. 
+    } 
 
 
 ######################### Cell Detection Parameters using custom filters
@@ -424,3 +435,6 @@ ContourOverlayParameter = {
 	"mri_atlas_image_path"	: os.path.join(BaseDirectory, 'autofluo_resampled.tif');,
 	"clearmap_output_image_path":os.path.join(BaseDirectory, 'aligned_atlas.tif') ,
 }
+
+### Update the CropGenerationParameters
+CropImageProcessingParameter = ImageProcessingParameter.copy()
