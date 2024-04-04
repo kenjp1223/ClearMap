@@ -49,7 +49,7 @@ for fname in [f for f in os.listdir(rootpath) if '.tif' in f]:
    #######################
    import ClearMap.Visualization.Plot as plt;
    pointSource= FilteredCellsFile[0];
-   data = plt.overlayPoints(SignalFile, pointSource, pointColor = None, **SignalFileRange);
+   data = plt.overlayPoints(CropGeneratingParameter['source'], pointSource, pointColor = None, **SignalFileRange);
    io.writeData(os.path.join(rootpath, fname.replace('.tif','_Spot_cells_check.tif')), data);
 
 #####################
