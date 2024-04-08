@@ -37,8 +37,8 @@ transformData(**TransformParameter);
 transformData(**ContourTransformParameter);
 
 #alignment to the Highres Atlas:
-resultDirectory  = alignData(**Highres_RegistrationAlignmentParameter);
-transformData(**HRTransformParameter);
+#resultDirectory  = alignData(**Highres_RegistrationAlignmentParameter);
+#transformData(**HRTransformParameter);
 
 #Cell detection:
 ################
