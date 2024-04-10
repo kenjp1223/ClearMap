@@ -79,7 +79,7 @@ PathReg        = '.../clearmap_ressources_mouse_brain/ClearMap_ressources/Region
 AtlasFile      = os.path.join(PathReg, 'Kim_ref_adult_v1_brain.tif'); # The image file which contains the MRI scan of mouse brain. This will be used to align the atlas to the raw images.
 AnnotationFile = os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9.tif'); # The image file which contains the mouse brain with region labels.
 AtlasInfoFile = os.path.join(PathReg, 'atlas_info_KimRef_FPbasedLabel_v2.9.csv'); # The table file which contains information about the brain atlas structure. The region "id" listed in this file will be used to decode the regions in "AnnotationFile".
-HRAtlasFile      = os.path.join(PathReg, 'Atlas_HRresampled.tif'); # The high resolution version of the brain atlas. Used for visualization.
+HRAtlasFile      = os.path.join(PathReg, 'Kim_ref_adult_v1_brain_HRresampled.tif'); # The high resolution version of the brain atlas. Used for visualization.
 ContourFile	= os.path.join(PathReg, 'Kim_ref_adult_FP-label_v2.9_contour_map.tif'); 
 initialize(annotationFile = AtlasInfoFile); # inialize the annotation file
 
