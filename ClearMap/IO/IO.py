@@ -835,7 +835,8 @@ def readPoints(source, **args):
     elif isinstance(source[1], basestring):
         mod = self.pointFileNameToModule(source[1]);
         properties = mod.readPoints(source[1]);
-        
+    
+    points = np.array(points,dtype = 'int') # make sure it is integers
     if istuple:
         return self.pointsToRange((points, properties), **args);
     else:
