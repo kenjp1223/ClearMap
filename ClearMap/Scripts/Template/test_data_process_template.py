@@ -31,7 +31,7 @@ if detection_flag:
    #run a for loop though all crops
    for filetype in ['train','test']:
       rootpath = os.path.join(CropGeneratingParameter['output_folder'],filetype)
-      for fname in [f for f in os.listdir(rootpath) if '.tif' in f]:
+      for fname in [f for f in os.listdir(rootpath) if '.tif' in f and 'check' not in f]:
          # update parameters for each crop
          CropImageProcessingParameter['source'] = os.path.join(rootpath, fname)
          CropImageProcessingParameter['sink'] = ( os.path.join(rootpath, fname.replace('.tif','_Spot_cells-allpoints.npy')),\
