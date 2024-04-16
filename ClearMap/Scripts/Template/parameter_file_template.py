@@ -24,6 +24,7 @@ from ClearMap.Analysis.Voxelization import voxelize
 from ClearMap.Utils.ParameterTools import joinParameter
 from ClearMap.IO.clean_table import clean_table
 from ClearMap.IO import generate_random_crops
+import ClearMap.Visualization.Plot as plt
 
 # The following are specific to brain atlas. 
 # If you are using allen brain atlas, use other files
