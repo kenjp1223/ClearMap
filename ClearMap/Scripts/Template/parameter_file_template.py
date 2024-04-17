@@ -8,7 +8,6 @@ Example script to set up the parameters for the image processing pipeline
 import os, numpy, math
 import sys
 import pandas as pd
-sys.path.append('.../ClearMap') #ClearMap path
 
 import tempfile
 tempfile.gettempdir()
@@ -214,7 +213,7 @@ voxelizeParameter = {
 
 #Processes to use for Resampling (usually twice the number of physical processors)
 ResamplingParameter = {
-    "processes": 16
+    "processes": 48
 };
 
 
