@@ -451,9 +451,9 @@ def readData(source, **args):
         raise RuntimeError('readData: cannot infer format of the requested data/file.');
 
 
-def writeData(sink, data, **args):
+def writeData(sink, data, startIndex = None, **args):
     """Write data to one of the supported formats
-    
+    # Aded the startIndex variable to make it run after ilastik cell segmentation.
     Arguments:
         sink (str, array or None): the destination for the data, if None the data is returned directly
         data (array or None): data to be written

@@ -5,7 +5,10 @@ sif_file=/PATH/TO/SIFFILE # .sif file
 
 # Find column indices for 'ID' and 'variable_file'
 file_name_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="ID") print i}' "$experiment_file")
+memory_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="memory") print i}' "$experiment_file")
+core_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="cores") print i}' "$experiment_file")
 variable_file_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="variable_file") print i}' "$experiment_file")
+
 
 # Read subject information from CSV file and submit Slurm jobs
 declare -i id_index=0
@@ -25,12 +28,22 @@ while IFS=, read -r line; do
     # Extract column index for 'ID' header using awk
     file_name=$(echo "$line" | awk -F ',' -v idx="$file_name_index" '{print $idx}')
     variable_file=$(echo "$line" | awk -F ',' -v idx="$variable_file_index" '{print $idx}')
+    memory=$(echo "$line" | awk -F ',' -v idx="$memory_index" '{print $idx}')
+    cores=$(echo "$line" | awk -F ',' -v idx="$core_index" '{print $idx}')
 
     # echo "$line"
     # Output extracted values for testing (replace with your logic)
     echo "file_name: $file_name"
     echo "Variable File: $variable_file"
-    
+    echo "Memory: $memory"
+    echo "Cores: $cores"    
+
+    # Remove the 'G' suffix
+    memory_without_suffix="${memory%"G"}"
+
+    # Convert to megabytes
+    memory_in_mb=$(( memory_without_suffix * 1024 ))
+
 
     # Define Slurm job name
     job_name="processing_job_${file_name}"
@@ -40,7 +53,6 @@ while IFS=, read -r line; do
     
     # Write Slurm job script
     cat > "$job_script" << EOF
-
 #!/bin/bash
 #SBATCH --job-name=$job_name
 #SBATCH --output=$job_name.out
@@ -48,8 +60,8 @@ while IFS=, read -r line; do
 #SBATCH -A ALLOCATION_NAME
 #SBATCH -p PARTITION_NAME
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=20
-#SBATCH --mem=50G
+#SBATCH --cpus-per-task=$cores
+#SBATCH --mem=$memory
 #SBATCH --time=12:00:00
 
 # Set environment variables
@@ -63,6 +75,18 @@ module load apptainer
 apptainer exec "$sif_file" python process_template_with_functions.py
 
 EOF
+
+    # Define ilastik parameter file name
+    # This is necessary to allow more extensive parallel processing
+    ilastik_script="$HOME/.ilastikrc"
+
+    cat > "$ilastik_script" << EOF
+[lazyflow]
+total_ram_mb=$memory_in_mb
+threads=$cores
+
+EOF
+
     id_index=$id_index+1
     # Submit Slurm job
     sbatch "$job_script"

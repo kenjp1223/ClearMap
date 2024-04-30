@@ -6,6 +6,37 @@ import numpy as np
 import os
 ######################### 
 
+def get_subregions(dataframe, region_id, collected=None, return_original=False):
+    """
+    Recursively get all subregions of a given region_id from the dataframe.
+
+    Args:
+        dataframe (pandas.DataFrame): DataFrame containing brain region data.
+        region_id (int): ID of the region to get subregions for.
+        collected (list, optional): List to store collected subregions. Defaults to None.
+
+    Returns:
+        pandas.DataFrame: DataFrame of subregions.
+    """
+    if collected is None:
+        collected = []
+
+    # Find subregions of the current region_id
+    subregions = dataframe[dataframe['parent_id'] == region_id].to_dict('records')
+
+    # Add current subregions to the collected list
+    collected.extend(subregions)
+
+    # Recursively search for subregions of each subregion
+    for subregion in subregions:
+        get_subregions(dataframe, subregion['id'], collected)
+
+    if return_original:
+        original = dataframe[dataframe['id'] == region_id].to_dict('records')
+        collected.extend(original)
+        return_original = False
+
+    return pd.DataFrame(collected)
 
 def clean_table(csvname,AtlasInfoFile):
     row = []
@@ -61,6 +92,15 @@ def clean_table(csvname,AtlasInfoFile):
             id_sorted.append(i)
 
     #add new col
+    finaldf['newcounts'] = 0
+
+    for iid in finaldf.id:
+        tdf = get_subregions(finaldf, iid, return_original = True)
+        finaldf.loc[finaldf.id == iid,'newcounts'] = np.sum(tdf.counts)    
+    
+    
+    '''
+    #add new col
     finaldf['newcounts'] = finaldf.counts
 
     #add newcounts
@@ -69,7 +109,7 @@ def clean_table(csvname,AtlasInfoFile):
         totalchildrencount = sum(finaldf[finaldf.parent_id == i].newcounts)
         parentcount = finaldf.counts.loc[idx]
         finaldf.newcounts.loc[idx] = parentcount + totalchildrencount
-
+    '''
     finaldf = finaldf[['id','counts','newcounts','Name','structure_order','parent_id','parent_acronym','acronym']]
     #return finaldf
     finaldf.to_csv(csvname.replace('.csv','_clean.csv'),index=False)
