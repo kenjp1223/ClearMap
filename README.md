@@ -10,6 +10,14 @@ Updates on some of the source code so it can run on the cluster.
 Added features for overlap analysis.
 The analysis is meant to be used for c-Fos and FosTRAP dual labeling
 
+
+4/20/2024
+========
+Added a bash script that will take in two files:
+experiment_parameter_tests.csv: The meta data of the experiment. The bash script will go through all the rows in this file and process each data.
+variable_file.xlsx: The meta data of the processing. The variables for each process step should be stated in this file.
+submit_jobs.sh: Takes in the experiment_parameter_tests.csv and creates bash script for individual rows and runs it.
+
 Copyright
 ---------
     (c) 2016 Christoph Kirst
