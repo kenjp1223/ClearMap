@@ -91,13 +91,13 @@ def main(input_folder, output_folder, fkey, n_crops, test_proportion = 0.2, zoff
         imwrite(os.path.join(test_folder, fkey + '_test_{}.tif'.format(i+1)), img)
 
 if __name__ == "__main__":
-    input_folder = r"\\128.95.12.251\Analysis2\Ken\LSMS\c-Fos_Sample_Data\20240205_14_18_17_IM3_c_Fos_Destripe_DONE\Ex_639_Ch2_stitched"
-    output_folder = r"C:\Users\stuberadmin\Desktop\ilastik_segmentation\test"
+    input_folder = r"/WHERE/THE/FILES/ARE"
+    output_folder = r"/WHERE/THE/FILES/GO"
     crop_size=(50, 250, 250)
     n_crops = 5
     test_proportion = 0.2
     zoffsets = 100
-    fkey = '20240205_14_18_17_IM3_c_Fos_Destripe_DONE_2'
+    fkey = 'NAME'
     print("Generating random crops...")
     main(   input_folder, 
             output_folder, 
