@@ -23,10 +23,10 @@ def crop_select(image, window_size=(200, 250, 250)):
     reshaped_image = np.reshape(image, new_shape)
 
     # Calculate std intensity for each window.
-    std_intensities = np.std(reshaped_image, axis=(1, 3, 5))
+    max_intensities = np.max(reshaped_image, axis=(1, 3, 5))
 
     # Flatten and sort the windows based on the std intensities
-    flat_sorted_index = np.argsort(std_intensities.flatten())[::-1]
+    flat_sorted_index = np.argsort(max_intensities.flatten())[::-1]
     sorted_index = [np.unravel_index(f, reshaped_image.shape[:3]) for f in flat_sorted_index]
     sorted_index = [(f[0]*window_size[0], f[1]*window_size[1], f[2]*window_size[2]) for f in sorted_index]
 
