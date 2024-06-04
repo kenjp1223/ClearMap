@@ -78,7 +78,7 @@ EOF
 
     # Define ilastik parameter file name
     # This is necessary to allow more extensive parallel processing
-    ilastik_script="$HOME/.ilastikrc"
+    ilastik_script=".ilastikrc"
 
     cat > "$ilastik_script" << EOF
 [lazyflow]
