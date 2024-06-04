@@ -49,7 +49,8 @@ ResamplingParameter      = extract_universal_parameter(variable_file,sheet_name 
 StackProcessingParameter = extract_universal_parameter(variable_file,sheet_name = 'StackProcessingParameter')
 voxelizeParameter        = extract_universal_parameter(variable_file,sheet_name = 'voxelizeParameter')
 thresholdParameter       = extract_universal_parameter(variable_file,sheet_name = 'thresholdParameter')
-detectSpotsParameter, ImageProcessingParameter = extract_Segmentation_parameter(variable_file, ImageProcessingMethod= 'SpotDetection')
+ImageProcessingMethod = data_parameter['ImageProcessingMethod']
+detectSpotsParameter, ImageProcessingParameter = extract_Segmentation_parameter(variable_file, ImageProcessingMethod= ImageProcessingMethod)
 
 ##### PARAMETERS SPECIFIC FOR DATA SET
 # The path to the data files
