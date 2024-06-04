@@ -309,7 +309,9 @@ def classifyPixel(project, source, sink = None, processingDirectory = None, clea
   
   ilinp = fileNameToIlastikInput(inpfile);
   ilout = fileNameToIlastikOuput(outfile);
-
+  print(project) # for debugging
+  print(ilout) # for debugging
+  print(ilinp) # for debugging
   args = '--project="' + project + '" ' + ilout + ' ' + ilinp;
   run(args);
   
