@@ -75,7 +75,7 @@ def detectCells(source, sink = None, method ="SpotDetection", processMethod = al
     elif method == 'Ilastik':
         if ClearMap.ImageProcessing.Ilastik.Initialized:
             detectCells = ClearMap.ImageProcessing.IlastikClassification.classifyCells;
-            # processMethod = 'sequential';  #ilastik does parallel processing so force sequential processing here # Commenting out for now, this could affect the procedure
+            processMethod = 'sequential';  #ilastik does parallel processing so force sequential processing here # Commenting out for now, this could affect the procedure
         else:
             raise RuntimeError("detectCells: Ilastik not initialized, fix in Settings.py or use SpotDectection method instead!");
     else:
