@@ -87,8 +87,8 @@ else:
 #Orientation: 1,2,3 means the same orientation as the reference and atlas files.
 #Flip axis with - sign (eg. (-1,2,3) flips x). 3D Rotate by swapping numbers. (eg. (2,1,3) swaps x and y)
 # If the brain was scanned in horizontal direction, flip the y and z, so (1,3,2).
-# If the brain was ventral to dorsal, flip the z, so (1,3,-2).
-# If the brain was positioned posterior top, flip the y, so (1,-3,2).
+# If the brain was ventral to dorsal, flip the z, so (1,-3,2).
+# If the brain was positioned posterior top, flip the y, so (1,3,-2).
 FinalOrientation = data_parameter['FinalOrientation'];
 
 ##### 
