@@ -2,6 +2,9 @@
 # change the following depending on your file
 experiment_file=/PATH/TO/EXPERIMENT_FILE #.csv file
 sif_file=/PATH/TO/SIFFILE # .sif file
+TIME=12:00:00
+PARTITION_NAME=PARTITION_NAME
+ALLOCATION_NAME=ALLOCATION_NAME
 
 # Find column indices for 'ID' and 'variable_file'
 file_name_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="ID") print i}' "$experiment_file")
@@ -56,13 +59,12 @@ while IFS=, read -r line; do
 #!/bin/bash
 #SBATCH --job-name=$job_name
 #SBATCH --output=$job_name.out
-#SBATCH --error=$job_name.err
-#SBATCH -A ALLOCATION_NAME
-#SBATCH -p PARTITION_NAME
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=$cores
+#SBATCH --error=slurm-%j-$job_name.err
+#SBATCH -A $ALLOCATION_NAME
+#SBATCH -p $PARTITION_NAME
+#SBATCH -n $cores
 #SBATCH --mem=$memory
-#SBATCH --time=12:00:00
+#SBATCH --time=$TIME
 
 # Set environment variables
 export id_index="$id_index"
@@ -72,7 +74,9 @@ export experiment_file="$experiment_file"
 
 # Run your Python script
 module load apptainer
-apptainer exec "$sif_file" python process_template_with_functions.py
+#apptainer exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
+apptainer exec "$sif_file" python batch_process.py
+
 
 EOF
 

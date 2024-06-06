@@ -65,7 +65,7 @@ signal_channel_key  = data_parameter['signal_channel_key']
 if 'SmartSpim' in data_parameter['Microscope']:
     signal_ex       = signal_channel_key.split('_')[1] # automatically gets the Exitation laser wave length.
     bg_ex           = bg_channel_key.split('_')[1] # automatically gets the Exitation laser wave length.
-    imaging_id      = '_'.join([f for f in os.listdir(os.path.join(BaseDirectory, signal_channel_key)) if '.tif' in f][0].split('_')[:2]) # automatically gets scan specific parameters.
+    imaging_id      = '_'.join([f for f in os.listdir(os.path.join(BaseDirectory, bg_channel_key)) if '.tif' in f][0].split('_')[:2]) # automatically gets scan specific parameters.
 
     #Data File and Reference channel File, usually as a sequence of files from the microscope
     #This is adjusted to work with SmartSpim2 data files. Adjust if there is a change in how the data is stored.

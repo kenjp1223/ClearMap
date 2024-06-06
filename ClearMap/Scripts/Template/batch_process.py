@@ -22,7 +22,7 @@ id_index = int(id_index)
 print("Processing subject index ", id_index, "in experiment file", experiment_file)
 
 #load the parameters:
-execfile('.../parameter_file_template_with_function.py') #user specific
+execfile('batch_parameter_file.py') #user specific
 
 #resampling operations:
 #######################
