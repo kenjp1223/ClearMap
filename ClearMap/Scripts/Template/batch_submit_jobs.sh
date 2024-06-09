@@ -75,7 +75,7 @@ export experiment_file="$experiment_file"
 # Run your Python script
 module load apptainer
 #apptainer exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
-apptainer exec "$sif_file" python batch_process.py
+apptainer exec "$sif_file" python batch_process_for_batch.py
 
 
 EOF
