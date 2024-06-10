@@ -42,7 +42,7 @@ from ClearMap.Alignment.Elastix import alignData, transformPoints,transformData
 
 ######################### Data parameters
 
-data_parameter           = extract_data_parameter(experiment_file,id_index,sheet_name = 'data_parameter')
+data_parameter           = extract_data_parameter(experiment_file,id_index,)
 atlasParameter           = extract_universal_parameter(variable_file,sheet_name = 'atlasParameter')
 CropGeneratingParameter  = extract_universal_parameter(variable_file,sheet_name = 'CropGeneratingParameter')
 ResamplingParameter      = extract_universal_parameter(variable_file,sheet_name = 'ResamplingParameter')
@@ -122,7 +122,7 @@ OriginalResolution = (xy_res, xy_res, z_res);
 tCropGeneratingParameter = {
     'input_folder'      : os.path.join(BaseDirectory, signal_channel_key), # the input folder which contains the data you want to generate crops. Default to signal folder.
     'output_folder'     : os.path.join(BaseDirectory, signal_channel_key +'_crops'), # the output folder to store the crop data.
-    'fkey'              : os.path.basename(BaseDirectory), # identifier for the cropped image. Default will use the folder name.
+    'fkey'              : data_parameter['BaseDirectory'], # identifier for the cropped image. Default will use the folder name.
     } 
 
 CropGeneratingParameter = joinParameter(CropGeneratingParameter, tCropGeneratingParameter)

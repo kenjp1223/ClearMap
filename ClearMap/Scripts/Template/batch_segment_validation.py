@@ -43,12 +43,16 @@ print("Processing subject index ", id_index, "in experiment file", experiment_fi
 execfile('batch_parameter_file.py') #user specific
 
 #Generate random crops for segmentation evaluation
-if CropGeneratingParameter['crop_flag']:
+crop_flag = CropGeneratingParameter['crop_flag']
+detection_flag = CropGeneratingParameter['detection_flag']
+del CropGeneratingParameter['crop_flag'],CropGeneratingParameter['detection_flag']
+
+if crop_flag:
    generate_random_crops.main(**CropGeneratingParameter)
 
 
 # Run through the generated crops and apply cell detection.
-if CropGeneratingParameter['detection_flag']:
+if detection_flag:
    for ftype in ['train','test']:
       BaseDirectory = os.path.join(CropGeneratingParameter['output_folder'],ftype)
       for SignalFile in os.listdir(BaseDirectory):

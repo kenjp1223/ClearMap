@@ -2,7 +2,7 @@
 # change the following depending on your file
 experiment_file=/PATH/TO/EXPERIMENT_FILE #.csv file
 sif_file=/PATH/TO/SIFFILE # .sif file
-TIME=12:00:00
+TIME="12:00:00"
 PARTITION_NAME=PARTITION_NAME
 ALLOCATION_NAME=ALLOCATION_NAME
 
@@ -73,16 +73,18 @@ export variable_file="$variable_file"
 export experiment_file="$experiment_file"
 
 # Run your Python script
-module load apptainer
-#apptainer exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
-apptainer exec "$sif_file" python batch_process.py
+# Use apptainer or singularity depending on the cluster environment
+module purge
+#module load apptainer
+#singularity exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
+singularity exec "$sif_file" python batch_process.py
 
 
 EOF
 
     # Define ilastik parameter file name
     # This is necessary to allow more extensive parallel processing
-    ilastik_script=".ilastikrc"
+    ilastik_script="$HOME/.ilastikrc"
 
     cat > "$ilastik_script" << EOF
 [lazyflow]
