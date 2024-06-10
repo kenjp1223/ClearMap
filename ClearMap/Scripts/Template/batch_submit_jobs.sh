@@ -77,7 +77,7 @@ export experiment_file="$experiment_file"
 module purge
 #module load apptainer
 #singularity exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
-singularity exec "$sif_file" python batch_process.py
+singularity exec "$sif_file" python process_file_for_batch.py
 
 
 EOF

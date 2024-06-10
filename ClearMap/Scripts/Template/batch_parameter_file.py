@@ -119,6 +119,7 @@ OriginalResolution = (xy_res, xy_res, z_res);
 
 ######################### Crop generation Parameters
 
+
 tCropGeneratingParameter = {
     'input_folder'      : os.path.join(BaseDirectory, signal_channel_key), # the input folder which contains the data you want to generate crops. Default to signal folder.
     'output_folder'     : os.path.join(BaseDirectory, signal_channel_key +'_crops'), # the output folder to store the crop data.

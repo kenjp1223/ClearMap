@@ -76,7 +76,7 @@ export experiment_file="$experiment_file"
 # Use apptainer or singularity depending on the cluster environment
 module purge
 #module load apptainer
-singularity exec "$sif_file" python batch_segment_validation.py # Use this for Segmentation validation
+singularity exec "$sif_file" python segment_validation_for_batch.py # Use this for Segmentation validation
 
 
 EOF
