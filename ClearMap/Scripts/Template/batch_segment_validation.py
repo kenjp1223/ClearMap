@@ -43,52 +43,54 @@ print("Processing subject index ", id_index, "in experiment file", experiment_fi
 execfile('batch_parameter_file.py') #user specific
 
 #Generate random crops for segmentation evaluation
-generate_random_crops.main(**CropGeneratingParameter)
+if CropGeneratingParameter['crop_flag']:
+   generate_random_crops.main(**CropGeneratingParameter)
 
 
 # Run through the generated crops and apply cell detection.
-for ftype in ['train','test']:
-   BaseDirectory = os.path.join(CropGeneratingParameter['output_folder'],ftype)
-   for SignalFile in os.listdir(BaseDirectory):
-      if not '.tif' in SignalFile or '_check.tif' in SignalFile:
-         continue
-      fname = SignalFile.replace('.tif','')
-      # Update the imaging parameters
-      ImageProcessingParameter["source"] = os.path.join(BaseDirectory, SignalFile)
-      ImageProcessingParameter["sink"] = (os.path.join(BaseDirectory, fname + '_Spot_cells-allpoints.npy'),  os.path.join(BaseDirectory,  fname + '_Spot_intensities-allpoints.npy'))
+if CropGeneratingParameter['detection_flag']:
+   for ftype in ['train','test']:
+      BaseDirectory = os.path.join(CropGeneratingParameter['output_folder'],ftype)
+      for SignalFile in os.listdir(BaseDirectory):
+         if not '.tif' in SignalFile or '_check.tif' in SignalFile:
+            continue
+         fname = SignalFile.replace('.tif','')
+         # Update the imaging parameters
+         ImageProcessingParameter["source"] = os.path.join(BaseDirectory, SignalFile)
+         ImageProcessingParameter["sink"] = (os.path.join(BaseDirectory, fname + '_Spot_cells-allpoints.npy'),  os.path.join(BaseDirectory,  fname + '_Spot_intensities-allpoints.npy'))
 
-      detectCells(**ImageProcessingParameter);
+         detectCells(**ImageProcessingParameter);
 
-      #Filtering of the detected peaks:
-      #################################
-      #Loading the results:
-      points, intensities = io.readPoints(ImageProcessingParameter["sink"]);
+         #Filtering of the detected peaks:
+         #################################
+         #Loading the results:
+         points, intensities = io.readPoints(ImageProcessingParameter["sink"]);
 
-      #Thresholding: the threshold parameter is either intensity or size in voxel, depending on the chosen "row"
-      FilteredCellsFile = (os.path.join(BaseDirectory, fname + '_Spot_cells.npy'), os.path.join(BaseDirectory,  fname + '_Spot_intensities.npy'));
+         #Thresholding: the threshold parameter is either intensity or size in voxel, depending on the chosen "row"
+         FilteredCellsFile = (os.path.join(BaseDirectory, fname + '_Spot_cells.npy'), os.path.join(BaseDirectory,  fname + '_Spot_intensities.npy'));
 
-      for threshold,row in zip(thresholdParameter['threshold'],thresholdParameter['row']):
-         points, intensities = thresholdPoints(points, intensities, threshold = threshold, row = row);
-      io.writePoints(FilteredCellsFile, (points, intensities));
+         for threshold,row in zip(thresholdParameter['threshold'],thresholdParameter['row']):
+            points, intensities = thresholdPoints(points, intensities, threshold = threshold, row = row);
+         io.writePoints(FilteredCellsFile, (points, intensities));
 
 
-      ## Check Cell detection (For the testing phase only, remove when running on the full size dataset)
-      #######################
-      import ClearMap.Visualization.Plot as plt;
-      pointSource= os.path.join(BaseDirectory, FilteredCellsFile[0]);
-      data = plt.overlayPoints(ImageProcessingParameter["source"], pointSource, pointColor = None, **SignalFileRange);
-      io.writeData(os.path.join(BaseDirectory, fname + '_Spot_cells_check.tif'), data);
+         ## Check Cell detection (For the testing phase only, remove when running on the full size dataset)
+         #######################
+         import ClearMap.Visualization.Plot as plt;
+         pointSource= os.path.join(BaseDirectory, FilteredCellsFile[0]);
+         data = plt.overlayPoints(ImageProcessingParameter["source"], pointSource, pointColor = None, **SignalFileRange);
+         io.writeData(os.path.join(BaseDirectory, fname + '_Spot_cells_check.tif'), data);
 
-      ## Check Cell detection (For the testing phase only, remove when running on the full size dataset)
-      #######################
-      pointSource= os.path.join(BaseDirectory, ImageProcessingParameter["sink"][0]);
-      data = plt.overlayPoints(ImageProcessingParameter["source"], pointSource, pointColor = None, **SignalFileRange);
-      io.writeData(os.path.join(BaseDirectory, fname + '_Spot_unfilteredcells_check.tif'), data);
-   #####################
+         ## Check Cell detection (For the testing phase only, remove when running on the full size dataset)
+         #######################
+         pointSource= os.path.join(BaseDirectory, ImageProcessingParameter["sink"][0]);
+         data = plt.overlayPoints(ImageProcessingParameter["source"], pointSource, pointColor = None, **SignalFileRange);
+         io.writeData(os.path.join(BaseDirectory, fname + '_Spot_unfilteredcells_check.tif'), data);
+      #####################
 
-      # Fin
-      end = time.time()
-      print("One file process ended in ",end - start)
+         # Fin
+         end = time.time()
+         print("One file process ended in ",end - start)
 
 #####################
 
