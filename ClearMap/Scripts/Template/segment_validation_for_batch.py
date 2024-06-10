@@ -31,7 +31,9 @@ print("Start analysis")
 # read the experiment file
 # specify the path as variable experiment_file
 experiment_file = os.environ.get('experiment_file')
+#experiment_file = r'/path/to/experiment_file/'
 variable_file = os.environ.get('variable_file')
+#variable_file = r'/path/to/variable_file/'
 
 # read the ID index that is used to extract the subject to analyze
 id_index = os.environ.get('id_index')
