@@ -64,7 +64,7 @@ if detection_flag:
          # Update the imaging parameters
          ImageProcessingParameter["source"] = os.path.join(BaseDirectory, SignalFile)
          ImageProcessingParameter["sink"] = (os.path.join(BaseDirectory, fname + '_Spot_cells-allpoints.npy'),  os.path.join(BaseDirectory,  fname + '_Spot_intensities-allpoints.npy'))
-
+         ImageProcessingParameter["SignalFileRange"] = {'x' : all, 'y' : all, 'z' : all, }
          detectCells(**ImageProcessingParameter);
 
          #Filtering of the detected peaks:

@@ -41,7 +41,7 @@ resultDirectory  = alignData(**CorrectionAlignmentParameter);
 #alignment to the Atlas:
 resultDirectory  = alignData(**RegistrationAlignmentParameter);
 transformData(**TransformParameter);
-transformData(**ContourTransformParameter);
+#transformData(**ContourTransformParameter);
 
 #Cell detection:
 ################
