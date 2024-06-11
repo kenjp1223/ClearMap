@@ -1,0 +1,3 @@
+ID,Condition,Microscope,BaseDirectory,variable_file,memory,cores,signal_channel_key,bg_channel_key,FinalOrientation,ImageProcessingMethod,xy_res,z_res,SignalFileRange,
+test1,condition1,SmartSpim2,/filepath1,/variable_file,175G,24,Ex_639_Ch2_stitched,Ex_488_Ch0_stitched,"(1, 3, -2)",SpotDetection,FALSE,FALSE,"{'x' : all, 'y' : all, 'z' : all}",
+test2,condition2,SmartSpim2,/filepath2,/variable_file,175G,24,Ex_639_Ch2_stitched,Ex_488_Ch0_stitched,"(1, 3, -2)",SpotDetection,FALSE,FALSE,"{'x' : all, 'y' : all, 'z' : all}",
