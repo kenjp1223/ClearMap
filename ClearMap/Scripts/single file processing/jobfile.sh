@@ -11,4 +11,5 @@
 #SBATCH -o clearmap_template.out
 
 module purge
-singularity exec .../clearmap.sif python .../process_template.py
+singularity exec .../clearmap.sif python process_template.py
+singularity exec .../clearmap.sif python detecion_validation.py

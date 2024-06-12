@@ -109,10 +109,10 @@ CropGeneratingParameter = {
     'input_folder'      : os.path.join(BaseDirectory, signal_channel_key), # the input folder which contains the data you want to generate crops. Default to signal folder.
     'output_folder'     : os.path.join(BaseDirectory, signal_channel_key +'_crops'), # the output folder to store the crop data.
     'fkey'              : os.path.basename(BaseDirectory), # identifier for the cropped image. Default will use the folder name.
-    'n_crops'           : 10,  # number of cropss that will be generated
-    'test_proportion'   : 0.2, # proportion of test data. 
-    'zoffsets'          : 100, # offset in z-axis. images in [0:zoffsets] will not be used.
-    'crop_size'         : (100,250,250), # size of the crop
+    'n_crops'           : 9,  # number of cropss that will be generated
+    'test_proportion'   : 0.1, # proportion of test data. 
+    'zoffsets'          : 600, # offset in z-axis. images in [0:zoffsets] will not be used.
+    'crop_size'         : (100,100,100), # size of the crop
     'crop_per_stack'    : 3 # program will loop through random z positions. number of crops defined here will be generated for each z position. 
     } 
 
