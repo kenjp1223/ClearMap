@@ -22,8 +22,7 @@ resampleData(**CorrectionResamplingParameterAutoFluo);
 resampleData(**RegistrationResamplingParameter);
 
 #resampling for high res. Uncomment only when you need to create high resolution resampled images.
-#resampleData(**RegistrationResamplingHRParameter);
-#resampleData(**RegistrationResamplingHRAutoParameter);
+
 
 
 #Alignment operations:
@@ -37,8 +36,10 @@ transformData(**TransformParameter);
 transformData(**ContourTransformParameter);
 
 #alignment to the Highres Atlas:
-#resultDirectory  = alignData(**Highres_RegistrationAlignmentParameter);
-#transformData(**HRTransformParameter);
+
+# Checking alignment quality
+binary_f1_output = F1Scores_NoContours(AtlasFile, TransformParameter['sink'] ,os.path.join(BaseDirectory, 'overlap_f1score.npy'))
+plotF1(binary_f1_output,os.path.join(BaseDirectory, 'overlap_f1score.png'))
 
 #Cell detection:
 ################

@@ -43,6 +43,10 @@ resultDirectory  = alignData(**RegistrationAlignmentParameter);
 transformData(**TransformParameter);
 #transformData(**ContourTransformParameter);
 
+# Checking alignment quality
+binary_f1_output = F1Scores_NoContours(AtlasFile, TransformParameter['sink'] ,os.path.join(BaseDirectory, 'overlap_f1score.npy'))
+plotF1(binary_f1_output,os.path.join(BaseDirectory, 'overlap_f1score.png'))
+
 #Cell detection:
 ################
 detectCells(**ImageProcessingParameter);

@@ -98,7 +98,7 @@ def F1Scores_NoContours(mri_atlas_image_path, clearmap_output_image_path,binary_
 
 # plots the array of F1 score per slice
 # the input is the array of F1 scores from either F1Scores function
-def plotF1(binary_f1_output):
+def plotF1(binary_f1_output,plot_outputfile):
 	fig, axs = plt.subplots(1, 1, figsize=(5, 5))
 	axs.plot(binary_f1_output, color="red", label="positive control")
 	axs.set_title("F1 Score Comparing Atlas and Registered Image per Slice")
