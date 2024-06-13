@@ -24,17 +24,7 @@ from ClearMap.IO.clean_table import clean_table
 from ClearMap.IO import generate_random_crops
 from ClearMap.IO.META import extract_data_parameter,extract_universal_parameter,extract_Segmentation_parameter
 
-# The following are specific to brain atlas. 
-# If you are using allen brain atlas, use other files
-from ClearMap.Analysis.Label_YK_24FEB22 import countPointsInRegions, labelToName, initialize
-from ClearMap.Analysis.Statistics_YK_24FEB22 import thresholdPoints
-# For Allen brains
-#from ClearMap.Analysis.Label import countPointsInRegions, labelToName, initialize
-#from ClearMap.Analysis.Statistics import thresholdPoints
 
-# For Rat brains
-#from ClearMap.Analysis.Label_Rat_test import countPointsInRegions, labelToName, initialize
-#from ClearMap.Analysis.Statistics import thresholdPoints
 
 from ClearMap.Alignment.Elastix import alignData, transformPoints,transformData
 
@@ -92,6 +82,21 @@ else:
 FinalOrientation = data_parameter['FinalOrientation'];
 
 ##### 
+
+# The following are specific to brain atlas. 
+# 
+if atlasParameter['Atlas_name'] == 'Allen':
+    # For Allen brains
+    from ClearMap.Analysis.Label import countPointsInRegions, labelToName, initialize
+    from ClearMap.Analysis.Statistics import thresholdPoints
+elif atlasParameter['Atlas_name'] == 'Rat':
+    # For Rat brains
+    from ClearMap.Analysis.Label_Rat_test import countPointsInRegions, labelToName, initialize
+    from ClearMap.Analysis.Statistics import thresholdPoints
+else:
+    # If you are using allen brain atlas, use other files
+    from ClearMap.Analysis.Label_YK_24FEB22 import countPointsInRegions, labelToName, initialize
+    from ClearMap.Analysis.Statistics_YK_24FEB22 import thresholdPoints
 
 
 ##### PARAMETERS SPECIFIC FOR ATLAS
