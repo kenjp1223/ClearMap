@@ -64,7 +64,6 @@ while IFS=, read -r line; do
 #SBATCH -A $ALLOCATION_NAME
 #SBATCH -p $PARTITION_NAME
 #SBATCH -n $cores
-#SBATCH --mem=$memory
 #SBATCH --time=$TIME
 #SBATCH --mail-type=end          # send email when job ends
 #SBATCH --mail-user=$email
