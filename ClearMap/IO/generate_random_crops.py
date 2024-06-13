@@ -33,7 +33,7 @@ def crop_select(image, window_size=(200, 250, 250)):
     return sorted_index
 
 # Modify generate crops of image that contain objects
-def generate_crops(imgfolder, n_crops,zoffsets = 100,  crop_size=(50, 250, 250), crop_per_stack = 3):
+def generate_crops(imgfolder, n_crops,zoffsets = 100,  crop_size=(50, 250, 250), crop_per_stack = 3,):
     # get the list of image files
     # the function is expecting a list of tif images contained in the imgfolder
     filenames = [os.path.join(imgfolder,f) for f in np.sort(os.listdir(imgfolder)) if '.tif' in f]
@@ -55,7 +55,7 @@ def generate_crops(imgfolder, n_crops,zoffsets = 100,  crop_size=(50, 250, 250),
 
             # Use crop_select to get the best area
             sorted_indices = crop_select(image_z_stack, crop_size)
-
+            sorted_indices = sorted_indices[::-1] # necessary?
             # Select the first index (best area)
             selected_index = sorted_indices[i+3] # dont pick up the first 3, since it may contain strong noise
 
