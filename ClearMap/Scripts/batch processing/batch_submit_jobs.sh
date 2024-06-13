@@ -5,7 +5,7 @@ sif_file=/PATH/TO/SIFFILE # .sif file
 TIME="12:00:00"
 PARTITION_NAME=PARTITION_NAME
 ALLOCATION_NAME=ALLOCATION_NAME
-email="XXX@YYY"
+EMAIL=XXX@YYY
 
 # Find column indices for 'ID' and 'variable_file'
 file_name_index=$(awk -F',' 'NR==1{for(i=1;i<=NF;i++) if($i=="ID") print i}' "$experiment_file")
@@ -66,7 +66,7 @@ while IFS=, read -r line; do
 #SBATCH -n $cores
 #SBATCH --time=$TIME
 #SBATCH --mail-type=end          # send email when job ends
-#SBATCH --mail-user=$email
+#SBATCH --mail-user=$EMAIL
 
 # Set environment variables
 export id_index="$id_index"
