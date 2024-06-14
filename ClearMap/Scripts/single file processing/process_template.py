@@ -55,10 +55,15 @@ transformData(**TransformParameter);
 points, intensities = io.readPoints(ImageProcessingParameter["sink"]);
 
 #Thresholding: the threshold parameter is either intensity or size in voxel, depending on the chosen "row"
+###SpotDetection
 #row = (0,0) : peak intensity from the raw data
 #row = (1,1) : peak intensity from the DoG filtered data
 #row = (2,2) : peak intensity from the background subtracted data
 #row = (3,3) : voxel size from the watershed
+###Ilastik
+#row = (0,0) : peak intensity from the raw data
+#row = (1,1) : voxel size after segmentation
+
 points, intensities = thresholdPoints(points, intensities, threshold = (50,5000), row = (1,1));
 io.writePoints(FilteredCellsFile, (points, intensities));
 
