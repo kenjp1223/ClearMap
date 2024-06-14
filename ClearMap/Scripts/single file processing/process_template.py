@@ -39,7 +39,6 @@ transformData(**ContourTransformParameter);
 
 # Checking alignment quality
 binary_f1_output = F1Scores_NoContours(RegistrationResamplingParameter["sink"], TransformParameter['sink'] ,os.path.join(BaseDirectory, 'overlap_f1score.npy'))
-plotF1(binary_f1_output,os.path.join(BaseDirectory, 'overlap_f1score.png'))
 
 #Cell detection:
 ################
