@@ -3,6 +3,7 @@ import cv2
 import os
 import sys
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import sklearn.metrics as sk
 
@@ -98,12 +99,13 @@ def F1Scores_NoContours(mri_atlas_image_path, clearmap_output_image_path,binary_
 
 # plots the array of F1 score per slice
 # the input is the array of F1 scores from either F1Scores function
-def plotF1(binary_f1_output,plot_outputfile):
-	fig, axs = plt.subplots(1, 1, figsize=(5, 5))
-	axs.plot(binary_f1_output, color="red", label="positive control")
-	axs.set_title("F1 Score Comparing Atlas and Registered Image per Slice")
-	axs.set_xlabel("z-axis slice")
-	axs.set_ylabel("F1 Score")
-	axs.set_ylim(0, 1)
-	axs.legend()
-	fig.savefig(plot_outputfile, bbox_inches='tight', dpi=216)
+def plotF1(binary_f1_output, plot_outputfile):
+    matplotlib.use('Agg')  # Use Agg backend for headless environment
+    fig, axs = plt.subplots(1, 1, figsize=(5, 5))
+    axs.plot(binary_f1_output, color="red", label="positive control")
+    axs.set_title("F1 Score Comparing Atlas and Registered Image per Slice")
+    axs.set_xlabel("z-axis slice")
+    axs.set_ylabel("F1 Score")
+    axs.set_ylim(0, 1)
+    axs.legend()
+    fig.savefig(plot_outputfile, bbox_inches='tight', dpi=216)
