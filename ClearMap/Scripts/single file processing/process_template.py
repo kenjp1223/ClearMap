@@ -38,7 +38,7 @@ transformData(**ContourTransformParameter);
 #alignment to the Highres Atlas:
 
 # Checking alignment quality
-binary_f1_output = F1Scores_NoContours(AtlasFile, TransformParameter['sink'] ,os.path.join(BaseDirectory, 'overlap_f1score.npy'))
+binary_f1_output = F1Scores_NoContours(RegistrationResamplingParameter["sink"], TransformParameter['sink'] ,os.path.join(BaseDirectory, 'overlap_f1score.npy'))
 plotF1(binary_f1_output,os.path.join(BaseDirectory, 'overlap_f1score.png'))
 
 #Cell detection:
