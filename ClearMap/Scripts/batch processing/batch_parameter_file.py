@@ -16,7 +16,7 @@ import ClearMap.IO as io
 from ClearMap.Alignment.Resampling import resampleData;
 from ClearMap.Alignment.Elastix import alignData, transformPoints
 from ClearMap.ImageProcessing.CellDetection import detectCells
-from ClearMap.Alignment.F1_Score import LoadingData, F1Scores_WithContours
+from ClearMap.Alignment.F1_Score import LoadingData, F1Scores_WithContours, F1Scores_NoContours, plotF1
 from ClearMap.Alignment.Resampling import resamplePoints, resamplePointsInverse
 from ClearMap.Analysis.Voxelization import voxelize
 from ClearMap.Utils.ParameterTools import joinParameter
