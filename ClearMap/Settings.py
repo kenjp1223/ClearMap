@@ -53,7 +53,9 @@ def setup():
     elif hostname == 'mtllab-Ubuntu': #MTL workstation
         IlastikPath = '/usr/local/ilastik-1.1.9-Linux';
         ElastixPath = '/usr/local/elastix';       
-    
+    elif hostname == 'DESKTOP-4D1380S': # Ken workstation
+        IlastikPath = r'C:\Program Files\ilastik-1.4.0.post1';
+        ElastixPath = r'/usr/local/elastix';               
     ## insert your hostname specific settings here ##
     #elif hostname == 'your-host-name':
     #    IlastikPath = 'path-to-ilastik';

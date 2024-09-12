@@ -1,3 +1,10 @@
+################################
+# This code is used to generate small chunks of images that contain cells.
+# These crops should be used to train your classifier or to adjust your parameters for spot detection.
+# The code will split the crops into training and test datasets according to the specified proportion parameter.
+
+################################
+
 # Import necessary libraries
 import os
 import numpy as np
@@ -8,28 +15,32 @@ from sklearn.model_selection import train_test_split
 def crop_select(image, window_size=(200, 250, 250)):
     # Create a new image shape that the original image will fit
     original_shape = image.shape
+    #print("Shape of original crop is",  original_shape)
     newshape = [window_size[f]*(image.shape[f]//window_size[f]) for f in range(3)]
 
     # Crop the original image to fit
     image = image[:newshape[0], :newshape[1], :newshape[2]]
-
+    #print("Shape of adjusted original image is",  image.shape)
     # Calculate how many windows fit along each dimension
     num_windows = [original_shape[i] // window_size[i] for i in range(3)]
 
     # Calculate the shape of the reshaped image
     new_shape = (num_windows[0], window_size[0], num_windows[1], window_size[1], num_windows[2], window_size[2])
-
+    #print(new_shape)
     # Reshape the image to create non-overlapping windows
     reshaped_image = np.reshape(image, new_shape)
+    #print(reshaped_image.shape)
+    # Calculate mean intensity for each window.
+    mean_intensities = np.mean(reshaped_image, axis=(1, 3, 5))
+    # Flatten and sort the windows based on the mean intensities
+    flat_sorted_index = np.argsort(mean_intensities.flatten())[::-1]
+    #print(np.sort(mean_intensities.flatten())[:3])
 
-    # Calculate std intensity for each window.
-    max_intensities = np.max(reshaped_image, axis=(1, 3, 5))
-
-    # Flatten and sort the windows based on the std intensities
-    flat_sorted_index = np.argsort(max_intensities.flatten())[::-1]
-    sorted_index = [np.unravel_index(f, reshaped_image.shape[:3]) for f in flat_sorted_index]
+    #print(np.unravel_index(flat_sorted_index[3], reshaped_image.shape))
+    sorted_index = [np.array(np.unravel_index(f, mean_intensities.shape)) for f in flat_sorted_index]
+    #print(sorted_index[0])
     sorted_index = [(f[0]*window_size[0], f[1]*window_size[1], f[2]*window_size[2]) for f in sorted_index]
-
+    #print(sorted_index[0])
     return sorted_index
 
 # Modify generate crops of image that contain objects
@@ -41,22 +52,23 @@ def generate_crops(imgfolder, n_crops,zoffsets = 100,  crop_size=(50, 250, 250),
     # start a loop to crop images
     crops = []
     while len(crops) < n_crops:
+        z = np.random.randint(zoffsets, len(filenames) - crop_size[0] - zoffsets)
+        #y = np.random.randint(offsets[1], imshape[0] - crop_size[1] - offsets[1])
+        #x = np.random.randint(offsets[2], imshape[1] - crop_size[2] - offsets[2])
+
+        image_z_stack = imread(filenames[z:z+crop_size[0]])
+        #image_z_stack = [TiffFile(filenames[z_idx]).asarray(out='memmap')[y:y+crop_size[1], x:x+crop_size[2]] for z_idx in range(z, z+crop_size[0])]
+        #image_z_stack = np.stack(image_z_stack, axis=0)
+
+        # Use crop_select to get the best area
+        sorted_indices = crop_select(image_z_stack, crop_size)
         for i in range(crop_per_stack):
             if not len(crops) < n_crops:
                 break
             print("Generating crop {} of {}".format(len(crops)+1, n_crops))
-            z = np.random.randint(zoffsets, len(filenames) - crop_size[0] - zoffsets)
-            #y = np.random.randint(offsets[1], imshape[0] - crop_size[1] - offsets[1])
-            #x = np.random.randint(offsets[2], imshape[1] - crop_size[2] - offsets[2])
 
-            image_z_stack = imread(filenames[z:z+crop_size[0]])
-            #image_z_stack = [TiffFile(filenames[z_idx]).asarray(out='memmap')[y:y+crop_size[1], x:x+crop_size[2]] for z_idx in range(z, z+crop_size[0])]
-            #image_z_stack = np.stack(image_z_stack, axis=0)
-
-            # Use crop_select to get the best area
-            sorted_indices = crop_select(image_z_stack, crop_size)
             # Select the first index (best area)
-            selected_index = sorted_indices[i+10] # dont pick up the first 3, since it may contain strong noise
+            selected_index = sorted_indices[i+3] # dont pick up the first 3, since it may contain strong noise
 
             crop = image_z_stack[selected_index[0]:selected_index[0]+crop_size[0],
                                 selected_index[1]:selected_index[1]+crop_size[1],
