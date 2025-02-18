@@ -5,6 +5,13 @@ This is a fork of ClearMap.
 Updates on some of the source code plus some additional files to allow annotations on new brain atlas files.
 Updates on some of the source code so it can run on the cluster.
 
+2/18/2025
+========
+Main scripts used on the HPCs are found in the script folder.
+The environment file (.sif) file is found in this repo, or you can construct using a def file.
+https://cloud.sylabs.io/library/kishii1223/repo/clearmap
+
+
 4/16/2024
 ========
 Added features for overlap analysis.
