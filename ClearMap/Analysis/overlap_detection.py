@@ -5,8 +5,10 @@ Create functions that can be used to detect overlap between two channels.
 
 """
 import numpy as np
+from scipy.spatial import cKDTree
 
-
+# remove due to inefficient overlap detection
+'''
 def find_overlap(cellarray1path,cellarray2path,imshape,offset = (5,5,3),save_bool = False):
     ######################################
     # find overlapping cells from two arrays of cell coordinate (x,y,z)
@@ -57,4 +59,51 @@ def find_overlap(cellarray1path,cellarray2path,imshape,offset = (5,5,3),save_boo
         np.save(cellarray2path.replace('.npy','_boolean.npy'),boolarray2)
     
     return overlapcellarray,overlapimg,boolarray1,boolarray2
+'''
+
+
+
+def find_overlap(cellarray1path, cellarray2path, offset=(5,5,3), save_bool=False):
+    """
+    Identify overlapping cells between two cell coordinate arrays using a proximity threshold.
+    
+    Parameters:
+        cellarray1path (str): Path to .npy file with cell coordinates (x,y,z)
+        cellarray2path (str): Path to .npy file with cell coordinates (x,y,z)
+        offset (tuple): Max (x,y,z) distance allowed for overlap
+        save_bool (bool): Whether to save boolean overlap arrays
+
+    Returns:
+        overlap_coords (np.ndarray): Coordinates of overlapping cells (from cellarray1)
+        boolarray1 (np.ndarray): Boolean array for cellarray1 indicating overlap
+        boolarray2 (np.ndarray): Boolean array for cellarray2 indicating overlap
+    """
+    cellarray1 = np.load(cellarray1path).astype(int)
+    cellarray2 = np.load(cellarray2path).astype(int)
+
+    # Convert anisotropic offset to a distance threshold
+    offset = np.array(offset)
+    dist_thresh = np.linalg.norm(offset)
+
+    # Build KD-tree for fast spatial search
+    tree2 = cKDTree(cellarray2)
+    distances, indices = tree2.query(cellarray1, distance_upper_bound=dist_thresh)
+
+    boolarray1 = distances != np.inf
+    matched_indices = indices[boolarray1]
+
+    boolarray2 = np.zeros(len(cellarray2), dtype=bool)
+    # Mark those in cellarray2 that were matched (avoid double-counting)
+    for idx in matched_indices:
+        if idx < len(boolarray2):  # filter invalid (out-of-bounds) matches
+            boolarray2[idx] = True
+
+    overlap_coords = cellarray1[boolarray1]
+
+    if save_bool:
+        np.save(cellarray1path.replace('.npy','_boolean.npy'), boolarray1)
+        np.save(cellarray2path.replace('.npy','_boolean.npy'), boolarray2)
+
+    return overlap_coords, boolarray1, boolarray2
+
 
