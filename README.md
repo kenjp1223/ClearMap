@@ -5,25 +5,7 @@ This is a fork of ClearMap.
 Updates on some of the source code plus some additional files to allow annotations on new brain atlas files.
 Updates on some of the source code so it can run on the cluster.
 
-2/18/2025
-========
-Main scripts used on the HPCs are found in the script folder.
-The environment file (.sif) file is found in this repo, or you can construct using a def file.
-https://cloud.sylabs.io/library/kishii1223/repo/clearmap
 
-
-4/16/2024
-========
-Added features for overlap analysis.
-The analysis is meant to be used for c-Fos and FosTRAP dual labeling
-
-
-4/20/2024
-========
-Added a bash script that will take in two files:
-experiment_parameter_tests.csv: The meta data of the experiment. The bash script will go through all the rows in this file and process each data.
-variable_file.xlsx: The meta data of the processing. The variables for each process step should be stated in this file.
-submit_jobs.sh: Takes in the experiment_parameter_tests.csv and creates bash script for individual rows and runs it.
 
 Major Updates in This Fork
 =========================
@@ -63,6 +45,12 @@ Major Updates in This Fork
   - Many parameter files now include options for setting the number of parallel processes for resampling, stack processing, and cell detection, making use of available HPC resources.
 - **Documentation and Templates:**
   - Example parameter files and templates are provided to help users adapt the pipeline to their own data and cluster environment.
+
+Singularity containers
+========
+The environment file (.sif) file can be downloaded from the following repository.
+https://cloud.sylabs.io/library/kishii1223/repo/clearmap
+Alternatively, you can use the def file located in the scripts folder
 
 How to Use
 ==========
@@ -118,9 +106,24 @@ To run the ClearMap batch processing pipeline on an HPC, follow these steps:
    ```
    - Replace `job_SAMPLEID.sh` with the actual script name generated for your sample.
 
+
 **Note:**
 - Always double-check the paths and resource settings in your scripts before submitting jobs.
 - The scripts are designed for SLURM clusters; for other schedulers, you may need to adapt the submission commands.
+
+Other resources for the usage of ClearMap on HPCs
+========================================
+- Overview of using ClearMap for wholebrain data preprocessing on HPCs
+https://youtu.be/6mqsMVrYnPY
+
+- Using ClearMap at Bridges-2 through NSF ACCESS program
+https://youtu.be/VK3FLcL41aY
+
+- Using Globus for file transfer between local and HPCs
+https://youtu.be/4XRtDsjOI4c
+
+- Using Ilastik for cell segmentation
+https://youtu.be/AkO2idt92yk
 
 Copyright
 ---------
@@ -128,6 +131,11 @@ Copyright
     The Rockefeller University, 
     ckirst@rockefeller.edu
 
+
+    (c) 2024 Kentaro Ishii
+    University of Washington
+    ken1223@uw.edu
+    Significant modifications and extensions for HPC and batch processing.
 License
 -------
     GPLv3, see LICENSE.txt for details.
