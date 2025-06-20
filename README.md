@@ -77,6 +77,51 @@ How to Use
 - **Containerized Execution:**
   - Build the container using `HPC_clearmap.def` or use the provided `.sif` file for reproducible runs.
 
+Execution Instructions for Batch Scripts
+========================================
+
+To run the ClearMap batch processing pipeline on an HPC, follow these steps:
+
+1. **Navigate to the Scripts Directory**
+   ```bash
+   cd /path/to/ClearMap/Scripts/batch processing
+   ```
+
+2. **Edit the Batch Submission Script(s)**
+   - Open the relevant batch submission script (e.g., `batch_submit_jobs.sh`, `batch_submit_detection_validation_jobs.sh`, or `batch_submit_overlap_detection_jobs.sh`) in a text editor.
+   - Update the following variables at the top of the script to match your environment:
+     - `experiment_file` (path to your experiment CSV file)
+     - `sif_file` (path to your Singularity/Apptainer .sif image)
+     - `PARTITION_NAME` (your cluster's partition/queue name)
+     - `ALLOCATION_NAME` (your allocation/project name)
+     - `EMAIL` (your email for job notifications)
+     - `TIME` (walltime for each job, if needed)
+
+3. **Edit Parameter Files as Needed**
+   - Make sure your `experiment_parameter_tests.csv` and `variable_file.xlsx` (or other parameter files) are correctly set up for your experiment.
+
+4. **Run the Batch Submission Script**
+   - Execute the batch submission script to generate and submit job scripts:
+   ```bash
+   bash batch_submit_jobs.sh
+   # or for overlap detection:
+   bash batch_submit_overlap_detection_jobs.sh
+   # or for detection validation:
+   bash batch_submit_detection_validation_jobs.sh
+   ```
+   - This will create individual job scripts (e.g., `job_*.sh`) and submit them to the cluster using `sbatch`.
+
+5. **(Optional) Manually Run a Generated Job Script**
+   - If you want to run a generated job script manually (for debugging or single runs):
+   ```bash
+   bash job_SAMPLEID.sh
+   ```
+   - Replace `job_SAMPLEID.sh` with the actual script name generated for your sample.
+
+**Note:**
+- Always double-check the paths and resource settings in your scripts before submitting jobs.
+- The scripts are designed for SLURM clusters; for other schedulers, you may need to adapt the submission commands.
+
 Copyright
 ---------
     (c) 2016 Christoph Kirst
