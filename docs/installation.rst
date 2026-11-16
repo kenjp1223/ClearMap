@@ -1,84 +1,78 @@
 Installation
 ============
 
+This fork is deployed as a Singularity/Apptainer container on a SLURM cluster. The container
+pins Python 2.7, elastix 4.9.0 and ilastik 1.3.3post3, which is the environment the ClearMap 1
+code base expects.
+
 Requirements
 ^^^^^^^^^^^^
 
-ClearMap is written in Python 2.7. It should run on any Python environment, but it also relies on external softwares such as `Elastix <http://elastix.isi.uu.nl>`_ which may not run optimally on Windows or Apple systems.
-For typical use, we recommend a workstation running Ubuntu 14 or later with at least 4 CPU cores, 64Gb of RAM and SSD disks. 128Gb of RAM and 6 cores or above will have much increased performances. The processing time however will depend greatly on the parameters set, so your experience may be different. Also, large hard drives may be needed to host the raw data, although 1 to 4Tb of storage space should be enough for most users.
+* A SLURM cluster with Singularity or Apptainer available on the compute nodes
+* Enough memory for a whole-brain stack — the batch scripts request ~175 GB and 24 cores per
+  sample by default
+* Fast scratch storage for the resampled stacks and registration output
+* The ClearMap atlas resources (``clearmap_ressources_mouse_brain``)
 
-Installation
-^^^^^^^^^^^^
+Getting the container
+^^^^^^^^^^^^^^^^^^^^^
 
-To install ClearMap, first create a folder to contain all the files for the program. Download the scripts from the latest version of ClearMap from `The iDISCO website <https://www.idisco.info>`_ and extract them in the ClearMap folder. You also need to download individually the following softwares:
+Pull the prebuilt image:
 
-  * To do the alignement, you should download `Elastix <http://elastix.isi.uu.nl>`_ (http://elastix.isi.uu.nl)
-
-  * If you wish to use the machine learning filters, download `Ilastik <http://ilastik.org>`_ (http://ilastik.org). This is an optional download, only if you wish to use this more complete object detection framework for complex objects.
-
-If you’re starting from a fresh Ubuntu 16.04LTS install, for instance, here are the steps to complete the installation. Open a terminal window and type the following instructions:
-
-- Installation tools:
-.. code-block:: bash
-    
-    $ sudo apt-get update
-    $ sudo apt-get install git
-    $ sudo apt-get install python-pip
-    $ sudo -H pip install --upgrade pip
-
-- Download ClearMap:
-.. code-block:: bash
-    
-    $ git clone https://github.com/ChristophKirst/ClearMap.git
-
-
-- Install Spyder:
 .. code-block:: bash
 
-    $ sudo apt-get install spyder
+    $ singularity pull clearmap.sif library://kishii1223/repo/clearmap
 
-- Install the necessary libraries:
+or build it from the definition file in this repository:
+
 .. code-block:: bash
 
-    $ sudo apt-get install python-opencv
-    $ sudo apt-get install cython
-    $ sudo apt-get install python-tifffile
-    $ sudo apt-get install python-h5py
-    $ sudo apt-get install python-natsort
-    $ sudo -H pip install scikit-image
-   
-We use `Spyder <https://pythonhosted.org/spyder/>`_ to run the code. Set the project explorer and working environment in the ClearMap folder.
+    $ sudo singularity build clearmap.sif ClearMap/Scripts/HPC_clearmap.def
+
+.. note::
+
+   The ``%files`` section of ``HPC_clearmap.def`` copies ``requirements.txt`` from a hard-coded
+   path on UW's Klone cluster. Edit it to point at your own checkout before building.
+
+The image clones this repository to ``/ClearMap`` at build time and adds it to ``PYTHONPATH``.
+To run a newer working copy, bind-mount it:
+
+.. code-block:: bash
+
+    $ singularity exec -B /path/to/ClearMap:/mnt/ClearMap \
+        --env PYTHONPATH=/mnt/ClearMap clearmap.sif python your_script.py
 
 Configuration
 ^^^^^^^^^^^^^
 
-Open the file ``ClearMap/Settings.py`` to set the paths of installations for Ilastik and Elastix:
+``ClearMap.Settings`` finds elastix and ilastik from environment variables, falling back to a
+table of known hosts:
 
-    >>> IlastikPath = '/yourpath/ilastik';
-    >>> ElastixPath = '/yourpath/elastix';
+.. code-block:: bash
 
-Note that Ilastik is optional. If you haven’t installed it, you can set the path to ``None``. You can also set the installation to run on multiple machines by setting a host specific path:
+    $ export CLEARMAP_ELASTIX_PATH=/elastix-4.9.0-linux
+    $ export CLEARMAP_ILASTIK_PATH=/ilastik-1.3.3post3-Linux
 
-    >>> if hostname == 'kagalaska.nld':  #Christoph’s Laptop 
-    >>>     IlastikPath = '/home/ckirst/programs/ilastik/';
-    >>>     ElastixPath = '/home/ckirst/programs/elastix/';
-    >>> elif hostname == 'mtllab-Ubuntu': #Nico’s Workstation
-    >>>     IlastikPath = '/usr/local/ilastik';
-    >>>     ElastixPath = '/usr/local/elastix';       
+ilastik is only needed for classifier-based segmentation; spot detection works without it.
 
-Additionnal Informations:
-^^^^^^^^^^^^^^^^^^^^^^^^^
-We run ClearMap on Ubuntu 16.04LTS using the following libraries:
+Local installation (without the container)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Matplotlib 1.5.1
-- Numpy 1.11.0
-- Scipy 0.16.0
-- Skimage 0.12.3
-- Mahotas 1.3.0 (`website <http://luispedro.org/software/mahotas/>`_)
-- h5py 2.6.0 (for Imaris files input/output only)
-- openCV 2.4.9.1
-- PyQt4
-- tifffile 0.6.2
-- Cython 0.23.1
+Possible but not recommended, since it needs a Python 2.7 environment:
 
+.. code-block:: bash
 
+    $ git clone https://github.com/kenjp1223/ClearMap.git
+    $ cd ClearMap
+    $ pip install -r ClearMap/Scripts/requirements.txt
+    $ pip install -e .
+
+``pip install -e .`` compiles the Cython voxelization extension, so a C compiler and numpy
+headers are required.
+
+Running the pipeline
+^^^^^^^^^^^^^^^^^^^^
+
+See the README for the batch workflow: fill in ``experiment_parameter_tests.csv`` and
+``variable_file.xlsx``, edit the header of ``batch_submit_jobs.sh``, and run it to generate and
+submit one SLURM job per sample.

@@ -7,7 +7,7 @@ from Cython.Build import cythonize
 import ClearMap
 import numpy
 
-with open('README.rst') as fptr:
+with open('README.md') as fptr:
     readme = fptr.read()
 
 with open('LICENSE.txt') as fptr:
@@ -23,27 +23,24 @@ extensions = [Extension(
 setup(
     name             = ClearMap.__title__,
     version          = ClearMap.__version__,
-    description      = readme.split('\n')[0],
+    description      = 'ClearMap 1 fork adapted for batch processing on SLURM/Singularity HPC clusters',
     long_description = readme,
-    author           = "Christoph Kirst",
-    author_email     = 'ckirst@rockefeller.edu',
-    url              = 'https://www.idisco.info/',
+    long_description_content_type = 'text/markdown',
+    author           = "Kentaro Ishii",
+    author_email     = 'ken1223@uw.edu',
+    url              = 'https://github.com/kenjp1223/ClearMap',
     license          = license,
     packages         = find_packages(exclude=('tests', 'docs')),
     ext_modules      = cythonize(extensions),
-    classifiers=(
-        'Development Status :: 1- Beta',
+    python_requires  = '>=2.7, <3',
+    classifiers=[
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Natural Language :: English',
-        'License :: GNU GENERAL PUBLIC LICENSE Version 3 2.0',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-    ),
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Image Processing',
+    ],
 )

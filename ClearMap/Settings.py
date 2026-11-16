@@ -55,12 +55,19 @@ def setup():
         ElastixPath = '/usr/local/elastix';       
     elif hostname == 'DESKTOP-4D1380S': # Ken workstation
         IlastikPath = r'C:\Program Files\ilastik-1.4.0.post1';
-        ElastixPath = r'/usr/local/elastix';               
+        ElastixPath = r'/usr/local/elastix';
     ## insert your hostname specific settings here ##
     #elif hostname == 'your-host-name':
     #    IlastikPath = 'path-to-ilastik';
-    #    ElastixPath = 'path-to-elastix';   
+    #    ElastixPath = 'path-to-elastix';
     ##
+
+    # environment variables win over the host table above, so the same image can
+    # be used on different clusters without editing this file:
+    #   export CLEARMAP_ELASTIX_PATH=/elastix-4.9.0-linux
+    #   export CLEARMAP_ILASTIK_PATH=/ilastik-1.3.3post3-Linux
+    ElastixPath = os.environ.get('CLEARMAP_ELASTIX_PATH', ElastixPath);
+    IlastikPath = os.environ.get('CLEARMAP_ILASTIK_PATH', IlastikPath);
 
     # check existence:
     if not ElastixPath is None:

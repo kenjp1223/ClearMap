@@ -4,6 +4,11 @@ ClearMap
 *ClearMap* is a toolbox for the analysis and registration of volumetric data
 from cleared tissues.
 
+This documentation covers the Stuber Lab (University of Washington) fork of ClearMap 1,
+adapted for batch processing on SLURM clusters inside a Singularity/Apptainer container.
+The core algorithms are unchanged from the original ClearMap 1; see
+`the repository <https://github.com/kenjp1223/ClearMap>`_ for the HPC workflow.
+
 *ClearMap* has been designed to analyze large 3D image stack datasets obtained with Light Sheet Microscopy 
 of iDISCO+ cleared mouse brains samples immunolabeled for nuclear proteins. ClearMap can perform image registration to a 3D annotated reference (such as the Allen Institute Brain Atlases), volumetric image processing, object detection and statistical analysis. The tools in *ClearMap* have been written with the mapping of Immediate Early Genes in the brain as the primary application.
 
@@ -37,6 +42,11 @@ Additional programming and consulting:
 Kannan Umadevi Venkataraju
 *Cold Spring Harbor Laboratories*
 
+HPC, batch processing and overlap detection:
+""""""""""""""""""""""""""""""""""""""""""""
+Kentaro Ishii
+*University of Washington*
+
 
 License
 ^^^^^^^
@@ -57,8 +67,6 @@ Using ClearMap
    installation
    tutorial
    imageanalysis
-   roadmap
-   issues
 
 ClearMap functions
 ------------------

@@ -18,3 +18,32 @@ Thumbs.db
 
 #
 .spyder*
+
+# Python build artifacts
+__pycache__/
+*.so
+build/
+dist/
+*.egg-info/
+
+# Cython generated C sources
+ClearMap/Analysis/VoxelizationCode.c
+
+# Editors / IDEs
+.vscode/
+.idea/
+
+# Sphinx output
+docs/build/
+
+# Container images (pull or build these, don't commit them)
+*.sif
+*.simg
+
+# Generated SLURM job scripts and logs
+job_*.sh
+!ClearMap/Scripts/Spatial heatmap analysis/job_heatmap_stats.sh
+slurm-*.out
+slurm-*.err
+*.out
+*.err

@@ -1,111 +1,59 @@
-ClearMap Git Help 
-=================
+# Working with this repository
 
+This is a fork of [ChristophKirst/ClearMap](https://github.com/ChristophKirst/ClearMap),
+maintained at <https://github.com/kenjp1223/ClearMap>.
 
-Install
--------
+## Use it
 
-For a plain user to use the toolbox:
+```bash
+git clone https://github.com/kenjp1223/ClearMap.git
+```
 
- * in terminal execute: 
- 
-    `cd basedirectory`
- 
-    `git clone https://github.com/ChristophKirst/ClearMap.git`
+Note that the Singularity image already contains a copy of this repository at `/ClearMap`
+(cloned at build time). To run a newer checkout, bind-mount it and set `PYTHONPATH` — see the
+README.
 
+## Develop on it
 
-For a developer / programmer:
+```bash
+# fork on github, then
+git clone https://github.com/<your-username>/ClearMap.git
+cd ClearMap
 
-  * create account at github
+# this fork, so you can pull in its changes
+git remote add stuber https://github.com/kenjp1223/ClearMap.git
 
-  * got to [https://github.com/ChristophKirst/ClearMap](https://github.com/ChristophKirst/ClearMap) and press fork button 
+# the original ClearMap 1, if you need it
+git remote add upstream https://github.com/ChristophKirst/ClearMap.git
 
-  * in terminal execute:
-	
-	`cd basedirectory`
+git fetch --all
+```
 
-	`git clone https://github.com/<your username>/ClearMap.git`
-	
-  * configure remotes (named upstream)
-        
-	`cd ClearMap`
+To pull in changes from this fork:
 
-	`git remote add upstream https://github.com/ChristophKirst/ClearMap.git`
+```bash
+git fetch stuber
+git merge stuber/master
+```
 
-	`git fetch upstream`
+## Contribute back
 
+Commit on a branch, push to your fork, and open a pull request against
+`kenjp1223/ClearMap:master`.
 
-Backup
-------
+```bash
+git checkout -b my-change
+git add -A
+git commit -m "describe what you did"
+git push origin my-change
+```
 
-To backup your version in case you followed the developer / programmer route:
+Changes to the core ClearMap algorithms (rather than the HPC scripts) are better directed at
+[ClearMap2](https://github.com/ChristophKirst/ClearMap2), which is the maintained upstream.
 
-  * in terminal in the ClearMap directory execute:
+## References
 
-      `git add -A`
-
-      `git commit -m 'some description of what you did'`
-
-      `git push`
-
-
-Update
-------    
-
-Plain user:
-
-  * in terminal in the iDisco directory execute
-     
-      `git pull`
-
-
-Programmer: 
-
-in case you want to update your code from the upstream repository
-
-  * in terminal execute:
- 
-      `git fetch upstream`
-      
-      `git merge upstream/master`
-
-  * if merging fails, some files will be highlighted with <<<<<< >>>>>> entries, fix this manually
-
-  * if you dont care about your own changes and simply want the plain new version:
-
-      `git reset --hard upstream/master`
-
-  * to force it to your fork on github use
-       
-	  `git push origin/master --force` 
-
-
-Submitting
-----------
-
-In case you have something to contribute to the code:
- 
-  * follow the steps in the Backup section first
-
-  * got to [https://github.com/ChristophKirst/ClearMap.git](https://github.com/ChristophKirst/ClearMap.git) and click pull request 
-  
-  * wait for us to accept the request
-
-
-References
-----------
-
-ClearMap home:
-
-  * [https://github.com/ChristophKirst/ClearMap](https://github.com/ChristophKirst/ClearMap)
-
-A good source to get questions answered about github: 
-
-  * [https://help.github.com/](https://help.github.com)
-  * [http://git-scm.com/documentation](http://git-scm.com/documentation)
-
-Git home:
-
-  * [http://git-scm.com](http://git-scm.com/)
-
-
+- This fork: <https://github.com/kenjp1223/ClearMap>
+- Original ClearMap 1: <https://github.com/ChristophKirst/ClearMap>
+- ClearMap2 (current upstream): <https://github.com/ChristophKirst/ClearMap2>
+- Git documentation: <https://git-scm.com/doc>
